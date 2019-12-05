@@ -1,58 +1,64 @@
 
-function WrapTextByLine(elementSelector = '', config = {}) {
-  const { wrap = true, wrappedClass = 'wrapped-line' } = config;
+const WrapTextByLine = (function() {
+  return function(elementSelectors = [], config = {}) {
+    const { wrap = true, wrappedClass = 'wrapped-line' } = config;
 
-  if ( !elementSelector ) return false;
+    if ( !elementSelectors || !Array.isArray(elementSelectors) ) return false;
 
-  const targetElements = document.querySelectorAll(elementSelector);
+    elementSelectors.forEach((elementSelector) => {
+      const targetElements = document.querySelectorAll(elementSelector);
 
-  targetElements.forEach((el) => {
-    if ( wrap ) {
-      el.innerHTML = wrapLines(el, wrappedClass);
-    } else {
-      el.innerHTML = el.textContent;
-    }
-  });
-}
+      targetElements.forEach((el) => {
+        if ( wrap ) {
+          el.classList.add('wtbl-active');
+          el.innerHTML = wrapLines(el, wrappedClass);
+        } else {
+          el.classList.remove('wtbl-active');
+          el.innerHTML = el.textContent;
+        }
+      });
+    });
+  }
 
-function wrapLines(el, wrappedClass) {
-  const clone = document.createElement('div');
-  const lineHeight = getLineHeight(el);
-  const text = el.textContent;
-  const words = text.split(' ');
-  let sentences = [];
-  let currentSentence = '';
+  function wrapLines(el, wrappedClass) {
+    const clone = document.createElement('div');
+    const lineHeight = getLineHeight(el);
+    const text = el.textContent;
+    const words = text.split(' ');
+    let sentences = [];
+    let currentSentence = '';
 
-  el.appendChild(clone);
+    el.appendChild(clone);
 
-  words.forEach((word, i) => {
-    clone.textContent += `${word} `;
+    words.forEach((word, i) => {
+      clone.textContent += `${word} `;
 
-    if ( clone.offsetHeight > lineHeight ) {
-      sentences.push(currentSentence);
-      currentSentence = '';
-      clone.textContent = `${word} `;
-    }
+      if ( clone.offsetHeight > lineHeight ) {
+        sentences.push(currentSentence);
+        currentSentence = '';
+        clone.textContent = `${word} `;
+      }
 
-    currentSentence += `${word} `;
+      currentSentence += `${word} `;
 
-    if ( i === words.length - 1) {
-      sentences.push(currentSentence)
-      el.removeChild(clone);
-    };
-  })
+      if ( i === words.length - 1) {
+        sentences.push(currentSentence.trim())
+        el.removeChild(clone);
+      };
+    })
 
-  return `<span class="${wrappedClass}">${sentences.join(`</span><span class="${wrappedClass}">`)}</span>`;
-}
+    return `<span class="${wrappedClass}">${sentences.join(`</span><span class="${wrappedClass}">`)}</span>`;
+  }
 
-function getLineHeight(el) {
-  var height;
+  function getLineHeight(el) {
+    var height;
 
-  el.style.whiteSpace = 'nowrap';
-  height = el.offsetHeight;
-  el.style.whiteSpace = 'normal';
+    el.style.whiteSpace = 'nowrap';
+    height = el.offsetHeight;
+    el.style.whiteSpace = 'normal';
 
-  return height;
-}
+    return height;
+  }
+})();
 
 export default WrapTextByLine;
