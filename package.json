@@ -1,0 +1,40 @@
+{
+  "name": "wrap-text-by-line",
+  "version": "1.0.0",
+  "description": "Do you have a large text node that's line-wrapped into several lines, and you'd like split/target each individual line? This JavaScript library will add wrapper tags around each line for you.",
+  "main": "./lib/wrap-text-by-line.js",
+  "module": "./libwrap-text-by-line.esm.js",
+  "unpkg": "./lib/wrap-text-by-line.min.js",
+  "scripts": {
+    "build": "rollup -c",
+    "prepublish": "rm -rf ./lib && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "rollup --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scrawlon/Wrap-Text-By-Line.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "Split",
+    "Target",
+    "Text",
+    "Line",
+    "Wrap"
+  ],
+  "author": "Scott McGrath",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/scrawlon/Wrap-Text-By-Line/issues"
+  },
+  "homepage": "https://github.com/scrawlon/Wrap-Text-By-Line#readme",
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "rollup": "^1.26.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-uglify": "^6.0.3"
+  },
+  "dependencies": {}
+}
