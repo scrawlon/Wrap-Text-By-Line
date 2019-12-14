@@ -48,13 +48,9 @@ const WrapTextByLine = (function() {
     const lineHeight = getLineHeight(el);
     const text = el.textContent;
     const words = text.split(' ');
+    const htmlWord = initialState.split(' ');
     let sentences = [];
     let currentSentence = '';
-
-    // const html = el.innerHTML;
-    const htmlWord = initialState.split(' ');
-
-    console.log({htmlWord});
 
     el.appendChild(clone);
 
@@ -74,8 +70,6 @@ const WrapTextByLine = (function() {
         el.removeChild(clone);
       };
     });
-
-    console.log({sentences});
 
     return `<span class="${wrappedClass}">${sentences.join(`</span><span class="${wrappedClass}">`)}</span>`;
   }
