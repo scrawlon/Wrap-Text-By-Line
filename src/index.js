@@ -5,15 +5,15 @@ const WrapTextByLine = (function() {
 
     if ( !elementSelectors || !Array.isArray(elementSelectors) ) return false;
 
-    elementSelectors.forEach((elementSelector) => {
+    elementSelectors.forEach((elementSelector, index) => {
       const targetElements = document.querySelectorAll(elementSelector);
 
       targetElements.forEach((el) => {
-        const initialState = cacheGetInitialState(el);
+        const initialState = cacheGetInitialState(el, elementSelector, index);
 
         if ( wrap ) {
           el.classList.add('wtbl-active');
-          el.innerHTML = wrapLines(el, wrappedClass, initialState);
+          el.innerHTML = wrapLines(el, elementSelector, index, wrappedClass, initialState);
         } else {
           el.classList.remove('wtbl-active');
           el.innerHTML = initialState;
@@ -22,33 +22,34 @@ const WrapTextByLine = (function() {
     });
   }
 
-  function cacheGetInitialState(el) {
+  function cacheGetInitialState(el, elementSelector, index) {
     const initialStateId = el.dataset.wtblInitialStateId;
-    let initialState = initialStateId ? localStorage.getItem(initialStateId) : '';
+    let initialState = initialStateId ? localStorage.getItem(`${elementSelector}-${index}-${initialStateId}`) : '';
 
     if ( !initialState ) {
-      initialState = cacheSetInitialState(el);
+      initialState = cacheSetInitialState(el, elementSelector, index);
     }
 
     return JSON.parse(initialState);
   }
 
-  function cacheSetInitialState(el) {
+  function cacheSetInitialState(el, elementSelector, index) {
     const initialStateId = Date.now();
     const initialState = JSON.stringify(el.innerHTML);
 
     el.dataset.wtblInitialStateId = initialStateId;
-    localStorage.setItem(initialStateId, initialState);
+    localStorage.setItem(`${elementSelector}-${index}-${initialStateId}`, initialState);
 
     return initialState;
   }
 
-  function wrapLines(el, wrappedClass, initialState) {
+  function wrapLines(el, elementSelector, index, wrappedClass, initialState) {
     const clone = document.createElement('div');
     const lineHeight = getLineHeight(el);
     const text = el.textContent;
     const words = text.split(' ');
     const htmlWord = initialState.split(' ');
+    // const cachedSentences = cacheGetSentences();
     let sentences = [];
     let currentSentence = '';
 
