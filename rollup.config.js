@@ -27,7 +27,7 @@ export default [
       {
         file: './lib/wrap-text-by-line.min.js',
         format: 'iife',
-        name: 'AnimationBlock'
+        name: 'WrapTextByLine'
       }
     ],
     plugins: [

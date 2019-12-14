@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "Do you have a large text node that's line-wrapped into several lines, and you'd like split/target each individual line? This JavaScript library will add wrapper tags around each line for you.",
   "main": "./lib/wrap-text-by-line.js",
-  "module": "./libwrap-text-by-line.esm.js",
+  "module": "./lib/wrap-text-by-line.esm.js",
   "unpkg": "./lib/wrap-text-by-line.min.js",
   "scripts": {
     "build": "rollup -c",
     "prepublish": "rm -rf ./lib && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "rollup --watch"
+    "watch": "rollup -c --watch"
   },
   "repository": {
     "type": "git",
