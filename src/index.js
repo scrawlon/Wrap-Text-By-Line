@@ -13,7 +13,7 @@ const WrapTextByLine = (function() {
 
         if ( wrap ) {
           el.classList.add('wtbl-active');
-          el.innerHTML = wrapLines(el, elementSelector, index, wrappedClass, initialState);
+          wrapLines(el, elementSelector, index, wrappedClass, initialState);
         } else {
           el.classList.remove('wtbl-active');
           el.innerHTML = initialState;
@@ -24,7 +24,7 @@ const WrapTextByLine = (function() {
 
   function cacheGetInitialState(el, elementSelector, index) {
     const initialStateId = el.dataset.wtblInitialStateId;
-    let initialState = initialStateId ? localStorage.getItem(`${elementSelector}-${index}-${initialStateId}`) : '';
+    let initialState = initialStateId ? localStorage.getItem(`${elementSelector}-${index}-${initialStateId}-wtlb-initial-state`) : '';
 
     if ( !initialState ) {
       initialState = cacheSetInitialState(el, elementSelector, index);
@@ -38,7 +38,7 @@ const WrapTextByLine = (function() {
     const initialState = JSON.stringify(el.innerHTML);
 
     el.dataset.wtblInitialStateId = initialStateId;
-    localStorage.setItem(`${elementSelector}-${index}-${initialStateId}`, initialState);
+    localStorage.setItem(`${elementSelector}-${index}-${initialStateId}-wtlb-initial-state`, initialState);
 
     return initialState;
   }
@@ -48,7 +48,7 @@ const WrapTextByLine = (function() {
     const lineHeight = getLineHeight(el);
     const text = el.textContent;
     const words = text.split(' ');
-    const htmlWord = initialState.split(' ');
+    const htmlWords = initialState.split(' ');
     // const cachedSentences = cacheGetSentences();
     let sentences = [];
     let currentSentence = '';
@@ -64,7 +64,7 @@ const WrapTextByLine = (function() {
         clone.textContent = `${word} `;
       }
 
-      currentSentence += `${htmlWord[i]} `;
+      currentSentence += `${htmlWords[i]} `;
 
       if ( i === words.length - 1) {
         sentences.push(currentSentence.trim())
@@ -72,15 +72,22 @@ const WrapTextByLine = (function() {
       };
     });
 
-    return `<span class="${wrappedClass}">${sentences.join(`</span><span class="${wrappedClass}">`)}</span>`;
+    console.log({sentences});
+
+    el.innerHTML =  `<span class="${wrappedClass}">${sentences.join(`</span><span class="${wrappedClass}">`)}</span>`;
   }
 
   function getLineHeight(el) {
-    var height;
+    const cacheInnerHTML = el.innerHTML;
+    let height;
 
+    el.innerHTML = el.textContent;
     el.style.whiteSpace = 'nowrap';
     height = el.offsetHeight;
     el.style.whiteSpace = 'normal';
+    el.innerHTML = cacheInnerHTML;
+
+    console.log({height});
 
     return height;
   }
