@@ -1,10 +1,23 @@
 # Wrap-Text-By-Line
-Do you have a large text node that's line-wrapped into several lines, and you'd like split/target each individual line? This JavaScript library will add wrapper tags around each line for you.
+To target individual lines of text, as they are displayed in the Dom, this library adds wrapper &lt;span&gt; tags around each line.
 
 ## Installation
-There are two npm options for adding Wrap Text By Line to your JS project. First run `'wrap-text-by-line`, then include in your code using 'require' or 'import'.
-* `const { WrapTextByLine } = require 'wrap-text-by-line';`
-* `import WrapTextByLine from 'wrap-text-by-line';`
+* __ESM:__ `const { WrapTextByLine } = require 'wrap-text-by-line';`
+* __CJS:__ `import WrapTextByLine from 'wrap-text-by-line';`
+* __HTML:__`<script src="https://unpkg.com/wrap-text-by-line"></script>`
 
-You can also include Wrap Text By Line directly in the head of an html page:
-* `<script src="https://unpkg.com/wrap-text-by-line"></script>`
+## Usage
+Add wrapper to all h1 elements:
+```JavaScript
+WrapTextByLine(['h1']);
+```
+
+Add wrapper to all elements of class 'headline':
+```JavaScript
+WrapTextByLine(['.headline']);
+```
+
+Remove wrapper from all h1 elements:
+```JavaScript
+WrapTextByLine(['.headline'], { wrap: false });
+```
