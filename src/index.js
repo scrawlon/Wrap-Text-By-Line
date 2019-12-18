@@ -24,7 +24,7 @@ const WrapTextByLine = (function() {
 
   function cacheGetInitialState(el, elementSelector, index) {
     const initialStateId = el.dataset.wtblInitialStateId;
-    let initialState = initialStateId ? localStorage.getItem(`${elementSelector}-${index}-${initialStateId}-wtlb-initial-state`) : '';
+    let initialState = initialStateId ? localStorage.getItem(`${elementSelector}-${index}-${initialStateId}-wtbl-initial-state`) : '';
 
     if ( !initialState ) {
       initialState = cacheSetInitialState(el, elementSelector, index);
@@ -38,7 +38,7 @@ const WrapTextByLine = (function() {
     const initialState = JSON.stringify(el.innerHTML);
 
     el.dataset.wtblInitialStateId = initialStateId;
-    localStorage.setItem(`${elementSelector}-${index}-${initialStateId}-wtlb-initial-state`, initialState);
+    localStorage.setItem(`${elementSelector}-${index}-${initialStateId}-wtbl-initial-state`, initialState);
 
     return initialState;
   }
@@ -49,9 +49,9 @@ const WrapTextByLine = (function() {
     const text = el.textContent;
     const words = text.split(' ');
     const htmlWords = initialState.split(' ');
-    // const cachedSentences = cacheGetSentences();
-    let sentences = [];
-    let currentSentence = '';
+    const cachedLinesArray = cacheGetLinesArray(el, elementSelector, index);
+    let lines = [];
+    let currentLine = '';
 
     el.appendChild(clone);
 
@@ -59,22 +59,23 @@ const WrapTextByLine = (function() {
       clone.textContent += `${word} `;
 
       if ( clone.offsetHeight > lineHeight ) {
-        sentences.push(currentSentence);
-        currentSentence = '';
+        lines.push(currentLine);
+        currentLine = '';
         clone.textContent = `${word} `;
       }
 
-      currentSentence += `${htmlWords[i]} `;
+      currentLine += `${htmlWords[i]} `;
 
       if ( i === words.length - 1) {
-        sentences.push(currentSentence.trim())
+        lines.push(currentLine.trim())
         el.removeChild(clone);
       };
     });
 
-    console.log({sentences});
-
-    el.innerHTML =  `<span class="${wrappedClass}">${sentences.join(`</span><span class="${wrappedClass}">`)}</span>`;
+    if ( !cachedLinesArray || JSON.stringify(cachedLinesArray) != JSON.stringify(lines) ) {
+      cacheSetLinesArray(el, elementSelector, index, lines);
+      el.innerHTML =  `<span class="${wrappedClass}">${lines.join(`</span><span class="${wrappedClass}">`)}</span>`;
+    }
   }
 
   function getLineHeight(el) {
@@ -84,12 +85,24 @@ const WrapTextByLine = (function() {
     el.innerHTML = el.textContent;
     el.style.whiteSpace = 'nowrap';
     height = el.offsetHeight;
-    el.style.whiteSpace = 'normal';
     el.innerHTML = cacheInnerHTML;
-
-    console.log({height});
+    el.style.whiteSpace = '';
 
     return height;
+  }
+
+  function cacheGetLinesArray(el, elementSelector, index) {
+    const initialStateId = el.dataset.wtblInitialStateId;
+    const cachedLinesArray = initialStateId
+      ? localStorage.getItem(`${elementSelector}-${index}-${initialStateId}-wtblLinesArray`)
+      : false;
+
+    return JSON.parse(cachedLinesArray);
+  }
+
+  function cacheSetLinesArray(el, elementSelector, index, lines) {
+    const initialStateId = el.dataset.wtblInitialStateId;
+    localStorage.setItem(`${elementSelector}-${index}-${initialStateId}-wtblLinesArray`, JSON.stringify(lines));
   }
 
   return WrapTextByLine;
